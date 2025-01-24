@@ -17,8 +17,6 @@ module.exports = {
             let roomId = globalData.nextChatRoomId || 1;
             let currentMid = 1;
 
-			console.log('Anika Sharma')
-
             function addMessageToUids(message, roomId, msgTime, currentMid, callback) {
                 async.parallel([
                     function (next) { db.sortedSetAdd(`uid:${message.fromuid}:chat:room:${roomId}:mids`, msgTime, currentMid, next); },
@@ -35,6 +33,7 @@ module.exports = {
                     function (next) { addMessageToUids(message, roomId, msgTime, currentMid, next); },
                 ], (err) => {
                     if (!err) {
+						console.log('Anika Sharma')
                         rooms[[message.fromuid, message.touid].sort().join(':')] = roomId;
                         roomId += 1;
                         db.setObjectField('global', 'nextChatRoomId', roomId, callback);
@@ -56,6 +55,7 @@ module.exports = {
                 if (rooms[pairID]) {
                     winston.verbose(`adding message ${currentMid} to existing roomID ${rooms[pairID]}`);
                     addMessageToUids(message, rooms[pairID], msgTime, currentMid, callback);
+					console.log('Anika Sharma')
                 } else {
                     winston.verbose(`adding message ${currentMid} to new roomID ${roomId}`);
                     createNewRoom(message, roomId, msgTime, currentMid, rooms, callback);
@@ -84,8 +84,6 @@ module.exports = {
             }
 
             processMessages(currentMid, globalData, callback);
-
-			console.log('Anika Sharma')
         });
     },
 };
